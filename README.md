@@ -8,4 +8,4 @@ In particular, these pilot studies aim to be a first step towards filling in the
 
 The object of my master thesis concerns the measurements on broadband speeds carried out by the Internet Foundation in Sweden (IIS) and made available to ITU in the context of the project Big Data for Measuring the Information Society.
 
-In this repository, I will share the results of this MSc thesis.
+In this repository I will share the results of my MSc thesis.
