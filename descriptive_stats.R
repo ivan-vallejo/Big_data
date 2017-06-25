@@ -389,3 +389,167 @@ ggplot(data=upldata, aes(x=Year, y=value, group=variable)) +
   theme(axis.text.y = element_text(size = rel(2)))      
 
 ggsave("upload_speeds_corrected.pdf",width=898/72,height=610/72)
+
+# PLOT SPEED BY OPERATOR BAR CHARTS
+library(ggplot2)
+library(dplyr)
+library(reshape)
+library(scales)
+setwd("~/BGSE_Classes/thesis/results/")
+speed_byop <- read.csv("speeds_byoperator.csv", stringsAsFactors = FALSE, header = T)
+speed_byop <- speed_byop[,-1]
+
+speed_byop$Operator <- factor(speed_byop$Operator,
+                               levels=c('Telia','others','Telenor',
+                                        'Bahnhof','Bredband2','Com Hem'))
+
+
+ggplot(data=speed_byop, aes(x=Year, y=Dwl, fill=Operator)) +
+  geom_bar(stat='identity',width=2.8, position = 'dodge')+
+  geom_text(data=speed_byop,aes(x=Year,y=Dwl,label=sprintf("%0.1f", round(Dwl, digits = 1))),
+            hjust=1.2,size=6,position = position_dodge(width = 2.8),color='white')+
+  coord_flip()+
+  theme_classic()+ 
+  theme(axis.title.y=element_text(margin=margin(0,20,0,0)),axis.title.x=element_text(margin=margin(20,0,0,0)))+
+  #xlab("Year")+
+  ylab('Donwload speed (Mbit/s)')+
+  scale_x_continuous(breaks=c(2011,2016),
+                     labels=c('2011','2016'))+
+  scale_y_continuous(breaks=seq(0,90,20))+
+  scale_fill_brewer(palette='Paired',name="",
+                    breaks=c('Com Hem','Bredband2','Bahnhof','Telenor','others', 'Telia'))+
+  theme(axis.line.x = element_blank(),axis.line.y = element_blank())+
+  theme(panel.grid.major = element_line(colour="grey80", linetype="dashed",size=0.2),
+        panel.grid.major.y = element_line(colour="white", linetype="dashed",size=0))+
+  theme(legend.text=element_text(size=14),legend.position=c(0.92,0.4),
+        plot.margin = unit(c(1,3,1,1), "lines"),
+        legend.key.height=unit(3,"line"),legend.key.size=unit(1,"cm"),
+        legend.background = element_rect(fill="transparent"))+
+  #theme(axis.title.y = element_text(size = rel(1.8),angle=0,vjust=0.5))+
+  theme(axis.title.x = element_text(size = rel(2)))+
+  theme(axis.text.x = element_text(size = rel(2)))+      
+  theme(axis.text.y = element_text(size = rel(2)),
+        axis.ticks=element_blank(),axis.title.y=element_blank())      
+
+ggsave("comparison_dwlspeeds_byop.pdf",width=898/72,height=610/72)
+
+speed_byop$Operator <- factor(speed_byop$Operator,
+                              levels=c('Com Hem','Telia','Telenor',
+                                       'others','Bahnhof','Bredband2'))
+
+ggplot(data=speed_byop, aes(x=Year, y=Upl, fill=Operator)) +
+  geom_bar(stat='identity',width=2.8, position = 'dodge')+
+  geom_text(data=speed_byop[7:12,],aes(x=Year,y=Upl,label=sprintf("%0.1f", round(Upl, digits = 1))),
+            hjust=1.2,size=6,position = position_dodge(width = 2.8),color='white')+
+  geom_text(data=speed_byop[1:6,],aes(x=Year,y=Upl,label=sprintf("%0.1f", round(Upl, digits = 1))),
+            hjust=-0.2,size=6,position = position_dodge(width = 2.8),color='black')+
+  coord_flip()+
+  theme_classic()+ 
+  theme(axis.title.y=element_text(margin=margin(0,20,0,0)),axis.title.x=element_text(margin=margin(20,0,0,0)))+
+  #xlab("Year")+
+  ylab('Upload speed (Mbit/s)')+
+  scale_x_continuous(breaks=c(2011,2016),
+                     labels=c('2011','2016'))+
+  scale_y_continuous(breaks=seq(0,90,20),limits = c(0,90))+
+  scale_fill_brewer(palette='Paired',name="",
+                    breaks=c('Bredband2','Bahnhof','others', 'Telenor','Telia','Com Hem'))+
+  theme(axis.line.x = element_blank(),axis.line.y = element_blank())+
+  theme(panel.grid.major = element_line(colour="grey80", linetype="dashed",size=0.2),
+        panel.grid.major.y = element_line(colour="white", linetype="dashed",size=0))+
+  theme(legend.text=element_text(size=14),legend.position=c(0.74,0.6),
+        plot.margin = unit(c(1,3,1,1), "lines"),
+        legend.key.height=unit(3,"line"),legend.key.size=unit(1,"cm"),
+        legend.background = element_rect(fill="transparent"))+
+  #theme(axis.title.y = element_text(size = rel(1.8),angle=0,vjust=0.5))+
+  theme(axis.title.x = element_text(size = rel(2)))+
+  theme(axis.text.x = element_text(size = rel(2)))+      
+  theme(axis.text.y = element_text(size = rel(2)),
+        axis.ticks=element_blank(),axis.title.y=element_blank())      
+
+ggsave("comparison_uplspeeds_byop.pdf",width=898/72,height=610/72)
+
+
+## OUTPUT MAP WITH COUNT
+
+library(maptools)
+library(data.table)
+library(rgdal)
+library(rgeos)
+library(sp)
+
+#Load the shapefile
+shp <- readOGR(path.expand("~/BGSE_Classes/thesis/maps/svk/riks/an_riks.shp"),"an_riks",stringsAsFactors = F)
+
+#plot it
+plot(shp)
+
+#get data from shapefile (dbf)
+dbf <- shp@data
+str(dbf)
+
+#edit dbf
+dbf <- data.table(shp@data)
+dbf[,'COUNT'] <- 0
+
+setwd("~/BGSE_Classes/thesis/results/")
+dwl_region <- read.csv("dwl_byregion.csv", stringsAsFactors = FALSE, header = T)
+dwl_region <- dwl_region[,-1]
+year=2016
+df_year <- dwl_region[dwl_region$Year==year,1:3]
+regions <- df_year$Regioncode
+df_year$Count <- 100 * df_year$Count/sum(df_year$Count)
+df_year$Cat <-cut(df_year$Speed, c(30,40,50,60,70))
+
+density <- data.frame('Regioncode'=c(10,20,9,21,13,23,6,8,7,25,12,1,4,3,17,24,22,19,14,18,5),
+                      'Count'=c(99.73*75453,98.56*137716,98.02*26924,98.56*140668,98.39*137878,
+                                99.95*65346,98.53*158894,99.45*116614,97.84*90333,97.72*125455,
+                                99.73*598028,99.88*994683,97.58*131174,98.87*161165,96.53*137387,
+                                95.37*128746,97.4*120713,99.17*127443,99.63*764205,99.82*139525,
+                                98.61*209276)/100)
+
+density$Count <- 100 * density$Count/sum(density$Count)
+density$Cat <-cut(density$Count, c(0,5,10,15,20,25,30))
+
+for(i in regions){
+  dbf[dbf$LANSKOD==i,'COUNT'] <- round(df_year[df_year$Regioncode==i,'Speed'],1)
+  dbf[dbf$LANSKOD==i,'CAT'] <- df_year[df_year$Regioncode==i,'Cat']
+  
+#dbf[dbf$LANSKOD==i,'COUNT'] <- round(density[density$Regioncode==i,'Count'],1)
+#dbf[dbf$LANSKOD==i,'CAT'] <- density[density$Regioncode==i,'Cat']
+}
+
+#write back
+shp@data <- as.data.frame(dbf)
+writeOGR(shp,path.expand("~/BGSE_Classes/thesis/results/Broadband_speeds/maps/dwl_speed.shp"),"count_2016",driver="ESRI Shapefile")
+
+# UPLOAD speeds maps
+upl_region <- read.csv("upl_byregion.csv", stringsAsFactors = FALSE, header = T)
+upl_region <- upl_region[,-1]
+year=2016
+df_year <- upl_region[upl_region$Year==year,1:3]
+regions <- df_year$Regioncode
+df_year$Count <- 100 * df_year$Count/sum(df_year$Count)
+df_year$Cat <-cut(df_year$Speed, c(20,30,40,50))
+
+density <- data.frame('Regioncode'=c(10,20,9,21,13,23,6,8,7,25,12,1,4,3,17,24,22,19,14,18,5),
+                      'Count'=c(99.73*75453,98.56*137716,98.02*26924,98.56*140668,98.39*137878,
+                                99.95*65346,98.53*158894,99.45*116614,97.84*90333,97.72*125455,
+                                99.73*598028,99.88*994683,97.58*131174,98.87*161165,96.53*137387,
+                                95.37*128746,97.4*120713,99.17*127443,99.63*764205,99.82*139525,
+                                98.61*209276)/100)
+
+density$Count <- 100 * density$Count/sum(density$Count)
+density$Cat <-cut(density$Count, c(0,5,10,15,20,25,30))
+
+for(i in regions){
+  dbf[dbf$LANSKOD==i,'COUNT'] <- round(df_year[df_year$Regioncode==i,'Speed'],1)
+  dbf[dbf$LANSKOD==i,'CAT'] <- df_year[df_year$Regioncode==i,'Cat']
+  
+  #dbf[dbf$LANSKOD==i,'COUNT'] <- round(density[density$Regioncode==i,'Count'],1)
+  #dbf[dbf$LANSKOD==i,'CAT'] <- density[density$Regioncode==i,'Cat']
+}
+
+#write back
+shp@data <- as.data.frame(dbf)
+writeOGR(shp,path.expand("~/BGSE_Classes/thesis/results/Broadband_speeds/maps/upl_speed.shp"),"count_2016",driver="ESRI Shapefile")
+
