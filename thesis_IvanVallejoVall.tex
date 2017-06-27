@@ -56,10 +56,13 @@
 \linespread{1.1}
 % More enumaration formats
 \usepackage{enumitem}
+% More tabular formats
+\newcommand{\specialcell}[3][c]{% 
+\begin{tabular}[#1]{@{}#2@{}}#3\end{tabular}}
 % Biblio settings
 \usepackage{natbib}
 % Captions & Sources style
-\usepackage[margin={2cm,2cm},labelfont=bf, font=small,justification=raggedright,singlelinecheck=false]{caption}
+\usepackage[margin={1.5cm,1.5cm},labelfont=bf, font=small,justification=raggedright,singlelinecheck=false]{caption}
 \newcommand{\source}[1]{\vspace{-3pt} \caption*{ Source: {#1}} }
 % Set footnote size
 \renewcommand{\footnotesize}{\small}
@@ -86,6 +89,7 @@
 \tableofcontents
 \newpage
 \listoffigures
+\listoftables
 \newpage
 \pagenumbering{arabic}% Arabic page numbers (and reset to 1)
 \section{Introduction}
@@ -164,43 +168,90 @@ Thus, the points from which to which the speed measurement is carried out matter
 
 \subsection{Measurement methodologies} \label{meth}
 
-From a technical standpoint, the most accurate option for measuring real broadband speeds is to implement in-network measurements, such as real traffic monitoring (using network counters) or test-call routines. The technical issues concerning this type of measurements are well known. Indeed,  international standardization bodies, such as the European Telecommunications Standards Institute, have issued internationally agreed methodologies on this type of measurements \citep{etsi}.
+From a technical standpoint, the most accurate option for measuring real broadband speeds is to implement in-network measurements, such as real traffic monitoring (using network counters) or test-call routines. The technical issues concerning this type of measurements are well known. Indeed,  international standardization bodies, such as the European Telecommunications Standards Institute, have issued internationally agreed guidelines on how to perform this type of measurements \citep{etsi}.
 
 In some countries, such as India and Spain, operators are required to self-report in-network measurements and the results are disclosed to the public on a regular basis \citep{setsi,zuhyle2015}.
 
-However, in-network measurements can only be accomplished by those stakeholders having direct access to the network infrastructure and therefore rely on the self-reporting of the concerned network operators. Because of the difficulty in overseeing compliance and the lack of independence of this type of measurements, this approach is usually not considered a solution on its own, but rather a complement to other external measurements.
+However, in-network measurements can only be accomplished by those stakeholders having direct access to the network infrastructure and therefore rely on the self-reporting of the concerned network operators. Because of the difficulty of overseeing compliance and the lack of independence of this type of measurements, this approach is usually not considered a solution on its own, but rather a complement to other external measurements.
 
-There are a number of external broadband speed measurements carried out by private stakeholders that have a global coverage, including Ookla's Speedtest and Akamai speed reports \citep{bauer2010,lehr2013,bauer2016}. 
+Therefore, external broadband speed measurements are the most common approach to gaining insights about real broadband speeds. There are a number of private stakeholders engaging in this kind of measurements and publishing data with a global coverage. These include, \textit{inter alia}, Ookla's Speedtest and Akamai speed reports \citep{bauer2010,lehr2013,bauer2016}. 
 
-In addition, there exist several external broadband speed measurement platforms commissioned by public entities or the academia. Some of them rely on hardware-based approaches, such as the SamKnows' Whitebox \citep{samknows2012,samknows2013} or the BISmark project's NoxBox \citep{sundaresan2012,sundaresan2014}. However, the majority of them rely on purely software approaches. 
+In addition, there exist several external broadband speed measurement platforms commissioned or operated by public entities and the academia. Some of them rely on hardware-based approaches, such as the SamKnows' Whitebox \citep{samknows2012,samknows2013} or the BISmark project's NoxBox \citep{sundaresan2012,sundaresan2014}. However, the majority of external measurements rely on purely software approaches. 
 
-Examples of software-based approaches from public entities include Telecommunications the Regulatory Commission of Sri Lanka's Internet speed test platform \citep{zuhyle2015}, the Internet Foundation in Sweden's \textit{Bredbandskollen} and the Italian Authority for Communications Guarantees' \textit{Misurainternet} platform.\footnote{For more information, see the \href{https://www.misurainternet.it/}{Miruainternet website}}.
+Examples of software-based approaches from public entities include the Regulatory Commission of Sri Lanka's Internet speed test platform \citep{zuhyle2015}, the Internet Foundation in Sweden's \textit{Bredbandskollen} and the Italian Authority for Communications Guarantees' \textit{Misurainternet} platform.\footnote{For more information, see the \href{https://www.misurainternet.it/}{Misurainternet website}}
 
-These platforms collect several broadband performance metrics beyond download speed, such as upload speeds and latency (delay). Depending on the type of online activity performed, some parameters will be more important than others. For instance, latency is very relevant for real-time communications, such as VoIP. Therefore a complete assessment of user quality of experience cannot be summarized into a single speed metric, but will require several complementary measurements \citep{samknows2013,zuhyle2015}. 
+These platforms collect several broadband performance metrics beyond download speed, such as upload speeds and latency (delay). Depending on the type of online activity performed, some parameters will be more important than others. For instance, latency is very relevant for real-time communications, such as VoIP. As a result of the diversity of activities performed online, a complete assessment of user quality of experience cannot be summarized into a single speed metric, but will require several complementary measurements \citep{samknows2013,zuhyle2015}. 
 
-Moreover, there exist some application-specific broadband measurements, such as Netflix's Fast.com and Youtube's Speed numbers, optimized for given platforms. That is, they reflect what is the actual speed experienced by a user transferring video files with the size and protocols common in Netflix and YouTube, respectively. However, these speed measurements may be a poor approximation of the actual speed experienced when browsing a website or sending a file \citep{bauer2010, bauer2016}.         
+Moreover, there exist some application-specific broadband measurements, such as Netflix's Fast.com and Youtube's Speed numbers. These measurement platforms are optimized to reflect what is the actual speed experienced by a user transferring video files with the size and protocols common in Netflix and YouTube, respectively. However, these speed measurements may be a poor approximation of the actual speed experienced when browsing a website or sending a file \citep{bauer2010, bauer2016}.         
 
-All external broadband speed measurement platforms depend on a few main design characteristics that affect their broadband speed measurements:
+Based on a literature review of the state-of-the-art in broadband speed measurements, it can be concluded that external broadband speed measurement platforms depend on a few main design characteristics that affect their outcomes:
 
 \begin{enumerate}[label=\textbf{\arabic* --}]
-	\item \textbf{Measurement path:} from which point to which point of the network the measurement is made. Contention ratios... WiFi network. On-net / off-net.
+	\item \textbf{Measurement path:} from which point to which point of the network the measurement is made (\autoref{fig:a3}). Speeds advertised by operators refer to the maximum achievable over the access link (points 2-3 in \autoref{fig:a3}). In xDSL connections, the access link is not shared, as it is for coaxial cable, but xDSL speeds are more sensitive to the distance to the local exchange (path from 2 to 3). 
+	
+	From point 3 in \autoref{fig:a3}, there is contention for all wired technologies (fibre, coaxial, copper). That is, the transmission capacity is shared by many concurrent users and, depending on the network charge, this may lead to congestion and lower speeds. Even so, from points 2 to 4 the connection remains within the network of the ISP with whom the end user has contracted the service and therefore the speeds depend only on the network dimensioning and management of that ISP.
+	
+	End users' quality of experience is affected by the end-to-end path (i.e. points 1 to 5). This means that the speed experienced by a user also depends on the quality of the in-house connection (path from 1 to 2). For instance, the WiFi connection may not support high speeds or there might be several users making use of the same connection, therefore reducing the bandwidth available for the single user performing the test. Home network bottlenecks have been found to be very relevant in those settings in which the access is capable of providing speeds greater than 20 Mbit/s \citep{sundaresan2016}. 
+	
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=\linewidth]{figure_network.png}
+        \caption{Network diagram -- Key measurement points.}
+        \caption*{\textbf{Source:} Author based on \cite{bauer2010}.}
+        \label{fig:a3}
+\end{figure}   
+	
+	In addition, end-to-end speeds may depend on other ISPs networks if the end user is accessing content hosted on the wider public Internet (off-net) instead of within the home ISP network (on-net). In the off-net case, the connection includes points 4 to 5 which are not under direct control of the home ISP. 
+	
+	However, it is the decision of the home ISP with whom to interconnect and under which conditions (e.g. traffic, peering). Therefore, under the assumption that customers demand universal connectivity from the ISP with whom they have the contract \citep[see][pp. 508-511]{economides2008}, this ISP could also be hold accountable for the speed delivered over the link from 4 to 5 in \autoref{fig:a3}. Indeed, ISP interconnection may have a substantial impact on consumer Internet performance and business relationships between ISPs are often at the root of this performance degradation, rather than technical issues \citep{m2014isp}.    
 
-	\item \textbf{Active versus passive testing:} passive testing measures broadband speeds of end users' normal online activities, whereas active testing relies on standardized tests run independently of each end users' actual online activity. On the one hand, active testing facilitates the comparability between measurements. On the other hand, passive testing reflects better the speed experienced by each end user given their activities \citep{zuhyle2015}.
+	\item \textbf{Active versus passive testing:} passive testing measures broadband speeds over end users' normal online activities, whereas active testing relies on standardized tests run independently of each end users' actual online activity. Active testing is usually preferred in benchmarking exercises because it facilitates the comparability between measurements \citep{zuhyle2015}. In passive testing, if two users are performing very different activities (e.g. heavy video streaming compared with light web browsing) the outcome of the speed measurements may be significantly different even if they have the same type of connection.
 
-	\item \textbf{Voluntary versus automatic testing:} some broadband speed measurements are initiated by the end user (most software-based platforms, including Ookla and Bredbandskollen), whereas a few others are scheduled remotely and take place automatically (e.g. hardware-based platforms, such as SamKnows). Voluntary testing has several drawbacks, including the risk of selection bias. That is, end user's may run the test in a diagnostic fashion when they are experiencing network problems \citep{bauer2010}. Moreover, actual speeds are sensitive to congestion: they tend to decrease at peak hours or during traffic burst times \citep{sundaresan2012,zuhyle2015}. As a result, broadband speed results of voluntary tests may be biased because of timing of the tests, which is out of control of the measurement platform and may not be randomly distributed. For instance, there could be more tests run during congestion periods because that is precisely when end users' perceive speed problems.          
+	\item \textbf{Voluntary versus automatic testing:} some broadband speed measurements are initiated by the end user (most software-based platforms, including Ookla and Bredbandskollen), whereas a few others are scheduled remotely and take place automatically (e.g. hardware-based platforms, such as SamKnows). Voluntary testing has several drawbacks, including the risk of selection bias. That is, end user's may run the test in a diagnostic fashion when they are experiencing network problems \citep{bauer2010}. Moreover, actual speeds are sensitive to congestion: they tend to decrease at peak hours or during traffic burst times \citep{sundaresan2012,zuhyle2015}. As a result, broadband speed results of voluntary tests may be biased because of the timing of the tests, which is out of control of the measurement platform and may not be randomly distributed. For instance, there could be more tests run during congestion periods because that is precisely when end users' perceive speed problems.          
 	 
 	\item \textbf{Data protocol configuration:} the data transmission protocol, usually TCP, may actually be the bottleneck if not correctly configured. This is more so in high-capacity networks (e.g. gigabit broadband networks), where a single TCP flow will most likely not be enough to measure the real capacity of the link. Therefore, multiple parallel TCP flows will be required to produce a reliable measurement in high-capacity networks \citep{bauer2010,bauer2016}.
 	
-	\item \textbf{Statistical aggregation:} results for individual tests are calculated using different methods. These include: (i) total bytes / total time, (ii) total bytes / total time after the ramp-up period, to exclude the initial warm-up period in which transmission is slower, and (iii) payload / bytes, so that only the actual information (and not the header aggregated by the transfer protocol) is considered. In addition, different aggregation methods are used for reporting aggregate statistics. For instance, SamKnows discards the top and bottom percentiles to control for outliers and averages the rest\citep{samknows2013}. Ookla removes the fastest 10 per cent and slowest 30 per cent slices of each measurement and averages the rest \citep{bauer2010}. \textit{Bredbandskollen} takes the higher between the average speed of the whole measurement period (10s) or the average of the last 8s.\footnote{See \textit{Bredbandskollen} methodology \href{https://ensupport.bredbandskollen.se/support/solutions/articles/1000228167-how-does-the-measurement-work-in-technical-terms-}{FAQ}.}   
+	\item \textbf{Statistical aggregation:} results for individual tests are calculated using different methods. These include: (i) total bytes / total time, (ii) total bytes / total time after the ramp-up period, to exclude the initial warm-up period in which transmission is slower, and (iii) payload / bytes, so that only the actual information (and not the header aggregated by the transfer protocol) is considered. In addition, different aggregation methods are used for reporting aggregate statistics. For instance, SamKnows discards the top and bottom percentiles to control for outliers and averages the rest \citep{samknows2013}. Ookla removes the fastest 10 per cent and slowest 30 per cent slices of each measurement and averages the rest \citep{bauer2010}. \textit{Bredbandskollen} takes the higher between the average speed of the whole measurement period (10s) or the average of the last 8s.\footnote{See \textit{Bredbandskollen} methodological \href{https://ensupport.bredbandskollen.se/support/solutions/articles/1000228167-how-does-the-measurement-work-in-technical-terms-}{FAQ}.}   
 	
-	\item \textbf{Other design parameters}, such as test duration time, technology used in the application (e.g. HTML or Flash based) and file size \citep{bauer2010,zuhyle2015}.             
-	
+	\item \textbf{Other design parameters}, such as test duration time, technology used in the application (e.g. HTML or Flash-based) and the file size used in download/upload measurements \citep{bauer2010,zuhyle2015}.             
+
 \end{enumerate} 
 
+\autoref{tab:t1} summarizes how this design parameters vary according to the broadband speed measurement platforms chosen in this project to benchmark the results obtained with \textit{Bredbandskollen}.
+
+The main differences would be following: SamKnows ability to exclude the home network from the measurement and to automatically control the test timing, which will lead to more robust results; Akamai's passive testing, which may lead to comparing apples and oranges if their results are used to benchmark the outcome of active tests; the different statistical aggregation procedures which may potentially have a significant impact on the results.
+
+Another relevant factor which needs to be considered is the different \textbf{sample sizes} of each broadband platform. For instance, concerning data from Sweden (i.e. the object of this project), \textit{Bredbandskollen} collected some 15 million observations per year for download speeds, Akamai 20 million and SamKnows 0.52 million. These differences illustrate the trade-off between volumes of data and precision of the measurement. Indeed, hardware-based measurements are costly and this severly limits the sample size even in developed countries.
+\vspace{1cm}      
+ 
+\begin{table}[H]
+\bgroup
+\def\arraystretch{1.5}%  1 is the default, change whatever you need
+ \begin{tabular}{|p{3cm}|p{2.5cm}|p{1.6cm}|p{1.9cm}|p{2cm}|p{2.2cm}|}
+  \hline 
+   & \specialcell[c]{c}{\textbf{Measurement}\\ \textbf{path}} & \specialcell[c]{c}{\textbf{Active}\\\textbf{passive}} & \specialcell[c]{c}{\textbf{Voluntary}\\\textbf{automatic}} & \textbf{Data flows} & \specialcell[c]{c}{\textbf{Statistical}\\\textbf{aggregation}} \\ 
+  \hline 
+  \textbf{Akamai} & \specialcell[c]{c}{1-4 or 1-5\\depending on\\server load} & Passive & \specialcell[c]{c}{Real\\traffic} & Sequential & Unknown \\ 
+  \hline 
+  \textbf{Bredbandskollen} & \specialcell[c]{c}{1-4\\for most \\inland\\measurements} & Active & Voluntary & Parallel & \specialcell[c]{c}{Avg.first 2s\\or avg 10s} \\ 
+  \hline 
+  \textbf{Ookla} & \specialcell[c]{c}{1-4 or 1-5\\depending on\\user location} & Active & Voluntary & Parallel & \specialcell[c]{c}{Avg. after\\ramp-up\\Excl. top\\10\% and\\bottom 30\%\\slices} \\ 
+  \hline 
+  \textbf{SamKnows} & \specialcell[c]{c}{2-4 or 2-5\\depending on\\user location} & Active & Automatic & Parallel &  \specialcell[c]{c}{Avg. after\\ramp-up\\Excl. top\\and bottom\\percentiles}\\ 
+  \hline 
+  \end{tabular}
+\egroup
+  \caption{Main differences between selected Internet measurement platforms.}
+  \caption*{\textbf{Source:} Author based on \cite{bauer2010, bauer2016,samknows2013} and \href{https://ensupport.bredbandskollen.se/support/solutions/articles/1000228167-how-does-the-measurement-work-in-technical-terms-}{Bredbandskollen}.}
+        \label{tab:t1}  
+\end{table}
   
 
 \subsection{Statistical approach} \label{stats}
 1st option you just describe the span of the sample is constructed, warn possible shortcomings and then just present the results.
+
+\textbf{Add chart bubles Tiru}
+
 \section{Data}
 Bla bla
 \subsection{Processing environment}
