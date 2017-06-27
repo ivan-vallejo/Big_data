@@ -34,7 +34,8 @@
 \usepackage{graphicx}
 \setlength{\parskip}{1em}
 \setlength{\parindent}{0em}
-
+% to allow capitalization of cross-references
+\usepackage{cleveref}
 \usepackage{bbold}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
@@ -53,6 +54,8 @@
 %Para settings
 \setlength\parindent{0pt}
 \linespread{1.1}
+% More enumaration formats
+\usepackage{enumitem}
 % Biblio settings
 \usepackage{natbib}
 % Captions & Sources style
@@ -102,16 +105,16 @@ The objective of the project is to show how big data from the telecommunication 
 
 In particular, these pilot studies aim to be a first step towards filling in the ICT data gaps in the global indicator framework agreed for the monitoring of the 2030 Agenda for Sustainable Development \citep{interagency}, and to inform private and public stakeholders on the current status of the digital divide.      
 
-The object of this master thesis concerns the measurements on broadband speeds carried out by the Internet Foundation in Sweden (IIS) and made available to ITU in the context of the project Big Data for Measuring the Information Society.    
+The object of this master thesis concerns the measurements on broadband speeds carried out by the Internet Foundation in Sweden (IIS)\footnote{The Internet Foundation in Sweden is an independent public-service organization which is responsible for the operation of the top-level domains '.se' and '.nu'. IIS reinvests part of the revenues obtained from the administration of these domains in activities to promote the stability of the Internet infrastructure in Sweden and research on the Internet. As part of these activities, IIS has developed the \textit{Bredbandskollen}, a software-based Internet platform to measure actual broadband speeds. For more information, see \href{https://www.iis.se/english/what-we-do/}{IIS website}} and made available to ITU in the context of the project Big Data for Measuring the Information Society.    
 
 \subsection{Relevance}
-Broadband speed measurements matter because they are a key input for several consumer, policy and regulatory decisions:
+Broadband speed measurements matter because they are a key input to several consumer, policy and regulatory decisions:
 
 \begin{itemize}
 
-	\item From a \textbf{consumer perspective}, broadband speed is one of the most important factors when choosing an Internet connection. For instance, in the European Union (EU) the download speed is the second most cited factor, after price, when deciding which broadband plan to choose.\footnote{On average, 41 per cent of respondents in the EU mentioned download speed as an important factor factor when subscribing to an Internet connection, compared with 71 per cent of respondents citing price. The figures refer to fieldwork carried out in January 2014.} However, six out of ten EU citizens do not know the maximum download speed of their broadband Internet plan and, among those that know it, a quarter of them believe that their real speed does not correspond to the one specified in their contract. Moreover, four in ten households in the EU admit having experienced difficulties accessing content at home because of speed or capacity issues \citep{eurobarometer}. It can thus be concluded that Internet speed is an important and controversial factor for consumers. 
+	\item From a \textbf{consumer perspective}, broadband speed is one of the most important factors when choosing an Internet connection. For instance, in the European Union (EU) the download speed is the second most cited factor, after price, when deciding which broadband plan to choose.\footnote{On average, 41 per cent of respondents in the EU mentioned download speed as an important factor when subscribing to an Internet connection, compared with 71 per cent of respondents citing price. The figures refer to fieldwork carried out in January 2014.} However, six out of ten EU citizens do not know the maximum download speed of their broadband Internet plan and, among those that know it, a quarter of them believe that their real speed does not correspond to the one specified in their contract. Moreover, four in ten households in the EU admit having experienced difficulties accessing content at home because of speed or capacity issues \citep{eurobarometer}. It can thus be concluded that Internet speed is both an important and a controversial factor for consumers. 
 	
-	\item From a \textbf{regulatory perspective}, broadband speed is one of the parameters often monitored to ensure that telecommunication operators and Internet service providers (ISPs) comply with some minimum quality-of-service (QoS) requirements. For example, Spain regulates the QoS parameters of electronic communication services by means of a service order, which includes specific Internet access parameters \citep[Annex I, Part II in ][]{boe}. In a similar fashion, the Telecom Regulatory Authority of India sets that subscribers should get a minimum of 80 per cent of the speed in their contract, as measured from the ISP node to the user \citep{trai2006}.         
+	\item From a \textbf{regulatory perspective}, broadband speed is one of the parameters often monitored to ensure that telecommunication operators and Internet service providers (ISPs) comply with some minimum quality-of-service (QoS) requirements. For example, Spain regulates the QoS parameters of electronic communication services by means of a service order, which includes specific Internet access parameters \citep[Annex I, Part II in ][]{boe}. In a similar fashion, the Telecom Regulatory Authority of India sets that subscribers should get a minimum of 80 per cent of the speed specified in their contract, as measured from the ISP node to the user \citep{trai2006}.         
 	
 	\item From a \textbf{policy perspective}, broadband speeds have wide implications concerning the initiatives undertaken in the telecommunication sector. For instance, the definition of broadband is often tied to a given minimum speed, which is subject to be revised, as was the case in India in 2014 (from 256 to 512 kbit/s) \citep{trai2014}. In the United States, the Congress asked the Federal Communications Commission (FCC) to evaluate the deployment of \textit{advanced telecommunication capabilities}. FCC considered these capabilities to require 4 Mbit/s download and 1 Mbit/s upload speeds in 2010, but revised the benchmark speeds to 25 Mbit/s download and 3 Mbit/s upload in 2015 \citep{fcc2015a}. In Europe, Finland was a worldwide pioneer in declaring affordable broadband access a basic right in 2010. Finland's Ministry of Transport and Communications set the threshold for the basic connection to 1 Mbit/s in 2010, revising it to 2 Mbit/s in 2016 \citep{eprs}. All these policy decisions have deep economic implications. Indeed, in most cases they imply the mobilization of universal service funds (USF) or subsidy schemes to meet the targets set in terms of availability of affordable Internet connections at a given speed.        
 \end{itemize}
@@ -132,28 +135,72 @@ All these factors motivate the interest in producing accurate data on actual bro
 \vspace{1cm}
 Given the relevance of broadband speeds for consumers, regulators and policy-makers, there is a growing demand for accurate measurements. 
 
-Advertised speeds, as publicized by operators and ISPs, provided only an upper-limit to the actual broadband speeds. On the other hand, precise external hardware-based measurements, such as the ones commissioned to SamKnows by the regulatory agencies in the UK \citep{ofcom2017}, the United States \citep{fcc2015b} and the European Commission \citep{samknows2013} are costly. Therefore, they cannot be realistically scaled up to a wider set of countries.  
+Advertised speeds, as publicized by operators and ISPs, provide only an upper-limit to the actual broadband speeds. On the other hand, precise external hardware-based measurements, such as the ones commissioned to SamKnows by the regulatory agencies in the UK \citep{ofcom2017}, the United States \citep{fcc2015b} and the European Commission \citep{samknows2013} are costly. Therefore, they cannot be realistically scaled up to a wider set of countries.  
 
 Software-based, crowdsourcing data on Internet speed measurements remains the only possible stable source of real broadband speed information for most countries. Moreover, the low cost of deployment of these measurement platforms makes it possible to envisage its adoption by any interested regulator/policy-making. 
 
-Indeed, some regulators in developing countries, such as the Telecommunications Regulatory Commission of Sri Lanka, have already launched their own measurement portal (\autoref{fig:a2}). Moreover, there are private stakeholders, such as Ookla, recording these data at the global level.\footnote{For more information on Ookla's Speedtest, see \autoref{meth} and \href{http://beta.speedtest.net/about}{Speedtest website}.} 
+Indeed, some regulators in developing countries, such as the Telecommunications Regulatory Commission of Sri Lanka, have already launched their own measurement portal (\autoref{fig:a2}). Moreover, there are private stakeholders, such as Ookla, recording these data at the global level.\footnote{For more information on Ookla's Speedtest, see \Cref{meth} and \href{http://beta.speedtest.net/about}{Speedtest website}.} 
 
 \begin{figure}[H]
     \centering
         \includegraphics[width=\linewidth]{srilanka.pdf}
-        \caption{Internet Speed Test Platform,  Sri Lanka.}
+        \caption{Internet speed test platform,  Sri Lanka.}
         \caption*{\textbf{Source:} \href{http://www.trc.gov.lk/2014-05-12-13-25-54/internet-speed-test.html}{Telecommunications Regulatory Commission of Sri Lanka}.}
         \label{fig:a2}
 \end{figure}   
 
-\textbf{Because of this... bla bla}
+In this context, the Internet Foundation in Sweden has been a forerunner of public-service broadband measurement platforms with its portal \textit{Bredbandskollen}, which collects data on Internet speeds since 2008 \citep{bredbandskollen}.   
+
+This project takes advantage of the microdata made available by IIS to ITU on the broadband speed measurements from the \textit{Bredbandskollen} platform in the last six years (2011-2016). This large dataset is used as a testbed for determining to which extent this kind of crowdsourcing measurements can be used to provide robust insights into real broadband speeds, as well as information on Internet user behavior.  
 
 \section{State of the art}
-Start by mentioning advertized speeds...
+Broadband speeds are used by operators and ISPs as a means of characterizing their offers and segmenting their services according to different QoS. Advertised speeds are determined by each service provider according to their own internal methodology, which is not disclosed nor usually inspected by an independent party. However, it is understood that these speeds indicate the maximum or peak data rates that a customer may experience in the link between the customer location and the broadband provider \citep{bauer2010}.
+
+More generally, advertised speeds are taken by customers to imply something meaningful about their experience when using a given broadband service. Since customers do not know in advance which Internet sites they will want to access, they demand universal connectivity from the ISPs and therefore expect advertised speeds to correspond to their end-to-end experience \citep[see the discussion on the MCI merger in][pp. 508-511]{economides2008}. 
+
+For example, a customer contracting a 10 Mbit/s broadband plan with Movistar in Spain will expect to access information from The New York Times website at speeds close to 10 Mbit/s, even though the content of that website is hosted outside Movistar's network.      
+
+Thus, the points from which to which the speed measurement is carried out matter for the consumer and explain part of the differences observed across different measurement platforms. \Cref{meth} reviews this and other technical factors having an impact on the state-of-the-art methodologies used to measure broadband speeds. \Cref{stats} presents how the problem of making statistical inference from crowdsourcing data on broadband measurements has been tackled in similar research efforts.   
+
 \subsection{Measurement methodologies} \label{meth}
-Bla bla
-\subsection{Statistical approach}
-Bla bla
+
+From a technical standpoint, the most accurate option for measuring real broadband speeds is to implement in-network measurements, such as real traffic monitoring (using network counters) or test-call routines. The technical issues concerning this type of measurements are well known. Indeed,  international standardization bodies, such as the European Telecommunications Standards Institute, have issued internationally agreed methodologies on this type of measurements \citep{etsi}.
+
+In some countries, such as India and Spain, operators are required to self-report in-network measurements and the results are disclosed to the public on a regular basis \citep{setsi,zuhyle2015}.
+
+However, in-network measurements can only be accomplished by those stakeholders having direct access to the network infrastructure and therefore rely on the self-reporting of the concerned network operators. Because of the difficulty in overseeing compliance and the lack of independence of this type of measurements, this approach is usually not considered a solution on its own, but rather a complement to other external measurements.
+
+There are a number of external broadband speed measurements carried out by private stakeholders that have a global coverage, including Ookla's Speedtest and Akamai speed reports \citep{bauer2010,lehr2013,bauer2016}. 
+
+In addition, there exist several external broadband speed measurement platforms commissioned by public entities or the academia. Some of them rely on hardware-based approaches, such as the SamKnows' Whitebox \citep{samknows2012,samknows2013} or the BISmark project's NoxBox \citep{sundaresan2012,sundaresan2014}. However, the majority of them rely on purely software approaches. 
+
+Examples of software-based approaches from public entities include Telecommunications the Regulatory Commission of Sri Lanka's Internet speed test platform \citep{zuhyle2015}, the Internet Foundation in Sweden's \textit{Bredbandskollen} and the Italian Authority for Communications Guarantees' \textit{Misurainternet} platform.\footnote{For more information, see the \href{https://www.misurainternet.it/}{Miruainternet website}}.
+
+These platforms collect several broadband performance metrics beyond download speed, such as upload speeds and latency (delay). Depending on the type of online activity performed, some parameters will be more important than others. For instance, latency is very relevant for real-time communications, such as VoIP. Therefore a complete assessment of user quality of experience cannot be summarized into a single speed metric, but will require several complementary measurements \citep{samknows2013,zuhyle2015}. 
+
+Moreover, there exist some application-specific broadband measurements, such as Netflix's Fast.com and Youtube's Speed numbers, optimized for given platforms. That is, they reflect what is the actual speed experienced by a user transferring video files with the size and protocols common in Netflix and YouTube, respectively. However, these speed measurements may be a poor approximation of the actual speed experienced when browsing a website or sending a file \citep{bauer2010, bauer2016}.         
+
+All external broadband speed measurement platforms depend on a few main design characteristics that affect their broadband speed measurements:
+
+\begin{enumerate}[label=\textbf{\arabic* --}]
+	\item \textbf{Measurement path:} from which point to which point of the network the measurement is made. Contention ratios... WiFi network. On-net / off-net.
+
+	\item \textbf{Active versus passive testing:} passive testing measures broadband speeds of end users' normal online activities, whereas active testing relies on standardized tests run independently of each end users' actual online activity. On the one hand, active testing facilitates the comparability between measurements. On the other hand, passive testing reflects better the speed experienced by each end user given their activities \citep{zuhyle2015}.
+
+	\item \textbf{Voluntary versus automatic testing:} some broadband speed measurements are initiated by the end user (most software-based platforms, including Ookla and Bredbandskollen), whereas a few others are scheduled remotely and take place automatically (e.g. hardware-based platforms, such as SamKnows). Voluntary testing has several drawbacks, including the risk of selection bias. That is, end user's may run the test in a diagnostic fashion when they are experiencing network problems \citep{bauer2010}. Moreover, actual speeds are sensitive to congestion: they tend to decrease at peak hours or during traffic burst times \citep{sundaresan2012,zuhyle2015}. As a result, broadband speed results of voluntary tests may be biased because of timing of the tests, which is out of control of the measurement platform and may not be randomly distributed. For instance, there could be more tests run during congestion periods because that is precisely when end users' perceive speed problems.          
+	 
+	\item \textbf{Data protocol configuration:} the data transmission protocol, usually TCP, may actually be the bottleneck if not correctly configured. This is more so in high-capacity networks (e.g. gigabit broadband networks), where a single TCP flow will most likely not be enough to measure the real capacity of the link. Therefore, multiple parallel TCP flows will be required to produce a reliable measurement in high-capacity networks \citep{bauer2010,bauer2016}.
+	
+	\item \textbf{Statistical aggregation:} results for individual tests are calculated using different methods. These include: (i) total bytes / total time, (ii) total bytes / total time after the ramp-up period, to exclude the initial warm-up period in which transmission is slower, and (iii) payload / bytes, so that only the actual information (and not the header aggregated by the transfer protocol) is considered. In addition, different aggregation methods are used for reporting aggregate statistics. For instance, SamKnows discards the top and bottom percentiles to control for outliers and averages the rest\citep{samknows2013}. Ookla removes the fastest 10 per cent and slowest 30 per cent slices of each measurement and averages the rest \citep{bauer2010}. \textit{Bredbandskollen} takes the higher between the average speed of the whole measurement period (10s) or the average of the last 8s.\footnote{See \textit{Bredbandskollen} methodology \href{https://ensupport.bredbandskollen.se/support/solutions/articles/1000228167-how-does-the-measurement-work-in-technical-terms-}{FAQ}.}   
+	
+	\item \textbf{Other design parameters}, such as test duration time, technology used in the application (e.g. HTML or Flash based) and file size \citep{bauer2010,zuhyle2015}.             
+	
+\end{enumerate} 
+
+  
+
+\subsection{Statistical approach} \label{stats}
+1st option you just describe the span of the sample is constructed, warn possible shortcomings and then just present the results.
 \section{Data}
 Bla bla
 \subsection{Processing environment}
@@ -163,7 +210,7 @@ Bla bla
 \section{Conclusion}
 Bla bla
 
-\nocite{*}
+%\nocite{*}
 
 \bibliography{references}
 \bibliographystyle{apalike}
