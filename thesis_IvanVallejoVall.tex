@@ -59,6 +59,8 @@
 % More tabular formats
 \newcommand{\specialcell}[3][c]{% 
 \begin{tabular}[#1]{@{}#2@{}}#3\end{tabular}}
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
 % Biblio settings
 \usepackage{natbib}
 % Captions & Sources style
@@ -227,7 +229,7 @@ Another relevant factor which needs to be considered is the different \textbf{sa
 \begin{table}[H]
 \bgroup
 \def\arraystretch{1.5}%  1 is the default, change whatever you need
- \begin{tabular}{|p{3cm}|p{2.5cm}|p{1.6cm}|p{1.9cm}|p{2cm}|p{2.2cm}|}
+ \begin{tabular}{|p{3cm}|P{2.5cm}|P{1.6cm}|P{1.9cm}|P{2cm}|P{2.2cm}|}
   \hline 
    & \specialcell[c]{c}{\textbf{Measurement}\\ \textbf{path}} & \specialcell[c]{c}{\textbf{Active}\\\textbf{passive}} & \specialcell[c]{c}{\textbf{Voluntary}\\\textbf{automatic}} & \textbf{Data flows} & \specialcell[c]{c}{\textbf{Statistical}\\\textbf{aggregation}} \\ 
   \hline 
@@ -237,7 +239,7 @@ Another relevant factor which needs to be considered is the different \textbf{sa
   \hline 
   \textbf{Ookla} & \specialcell[c]{c}{1-4 or 1-5\\depending on\\user location} & Active & Voluntary & Parallel & \specialcell[c]{c}{Avg. after\\ramp-up\\Excl. top\\10\% and\\bottom 30\%\\slices} \\ 
   \hline 
-  \textbf{SamKnows} & \specialcell[c]{c}{2-4 or 2-5\\depending on\\user location} & Active & Automatic & Parallel &  \specialcell[c]{c}{Avg. after\\ramp-up\\Excl. top\\and bottom\\percentiles}\\ 
+  \textbf{SamKnows} & 2-5 & Active & Automatic & Parallel &  \specialcell[c]{c}{Avg. after\\ramp-up\\Excl. top\\and bottom\\percentiles}\\ 
   \hline 
   \end{tabular}
 \egroup
@@ -248,9 +250,69 @@ Another relevant factor which needs to be considered is the different \textbf{sa
   
 
 \subsection{Statistical approach} \label{stats}
-1st option you just describe the span of the sample is constructed, warn possible shortcomings and then just present the results.
 
-\textbf{Add chart bubles Tiru}
+\Cref{meth} has dealt with what traditional statisticians would consider measurement error. This section looks into the issues related to the statistical treatment of the data. In particular, it looks at how similar studies have dealt with the problem of extracting representative insights about the whole population (or, at least, the in-scope population) 
+based on non-representative Internet data. 
+
+That is, given the data provided by a given broadband measurement platform (\textit{Bredbandskollen} in this project), how can we make statistical inference of the whole population or, at least, about some segments of it? 
+
+Official indicators on telecommunications/ICTs are divided into two categories according to the source of the data collection: administrative data, and household surveys or censuses. The methodologies for collecting harmonized and internationally comparable ICT data from these two data sources are well know. See for instance the ITU Handbook \citep{handbook} and the ITU Manual \citep{manual}, respectively for administrative and survey ICT data sources.   
+
+Big data, such as the millions of records obtained from broadband measurement platforms, are often a middle ground between these two types of data sources (\autoref{fig:a4}). 
+
+Despite the large new datasets that are becoming available, if a given data source does not include all the data for a given type of measurement (e.g. the real broadband speed of all connections according to a given measurement approach), then it cannot be treated statistically as administrative data records and requires some of the techniques usually applied to survey data, such as those concerning sampling \citep{bigdata}.
+
+Official ICT statistics from household surveys are grounded on probability-based sample surveys and a frequentist statistical framework \citep{couper2013}. However, there is much more statistical uncertainty about the measurement in the data collected from broadband measurement platforms than in the programmed surveys undertaken by national statistical offices. 
+
+%\vspace{1cm}
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=0.5\linewidth]{admin_bd_hh.pdf}
+        \caption{Data sources for official ICT statistics.}
+        \caption*{\textbf{Source:} \cite{margus}.}
+        \label{fig:a4}
+\end{figure}   
+
+Indeed, broadband speed measurements are composed of non-representative Internet data and, as such, face similar problems to those found in non-probabilistic samples \citep{couper2013,zagheni2015}:
+
+\begin{enumerate}
+	\item \textbf{Quota-based samples:} a panel is selected trying to make its composition proportional to the social, demographic and/or geographic characteristics of the in-scope population. More in general, quota-sampling is based on the selection of the surveyed individuals based on a series of covariates that are believed to explain the target variable. For instance, in its quota-based sampling methodology, SamKnows considers country, ISP and connection technologies to determine the quotas \citep{samknows2013}. Quota sampling in itself does not solve the issue of selection bias, particularly when participation is voluntary as in SamKnows studies.
+	
+	\item \textbf{Online voluntary surveys:} on top of the selection bias, unequal participation of the volunteers may add more uncertainty about the representativeness of the results. Indeed,  there is evidence from the survey research domain pointing that a relative large numbers of online surveys are completed by a relative small number of active panelists \citep{couper2013}. In the domain of broadband speed measurements, in some platforms where it is possible to identify individual end users, such in \textit{Bredbandskollen}, there is evidence that some active users ran thousands of tests per year, whereas some others only a few. In some other platforms, however, one-time test users were found to be predominant \citep{wattegama2011}. 
+\end{enumerate}
+	
+From all statistical issues, selection bias is the central one when trying to make statistical inferences from the data produced by a broadband test platform. For instance, \cite{opt2012} used official statistics on geography, technology, gender and age\footnote{Official statistics on geography, technology, gender and age in the Netherlands are produced via household surveys by Statistics Netherlands (CBS) and administrative regulatory filings of ISPs to the Dutch regulator OPTA.} to test whether self-selected measurements of a broadband speed platform (iPing) where representative of the whole population. The results rejected this hypothesis, and concluded that higher speed connections as well as males and persons aged 30-60 were overrepresented. Moreover, the paper found that the results of Ookla's and Samknows' broadband measurement platforms in the Netherlands also risked not being representative of the whole population.
+
+Several approaches have been proposed to deal with selection bias:
+
+\begin{enumerate}
+
+	\item \textbf{Selection panel:} create a proper selection panel from which to draw detailed socio-economic household and individual data in addition to the broadband measurements. This selection panel can then be used to weight the results of the self-selected panel and produce representative results out of it \citep{opt2012}. This is indeed a reliable but costly option, because it requires the maintenance of a regular panel in addition to the upkeep of the speed measurement application.
+	
+	\item \textbf{Calibration against ground-truth data:} use data from a reliable source (i.e. the so called ground-truth data) to weight the results of the broadband speed test in order to ensure that the results of the two sources correspond for a period in which they overlap.  This correction relies on the assumption that there is a (potentially stochastic) structural relationship between the subgroup of the population included in the broadband speed test sample and those not included. Moreover, this relationship needs to hold in time \citep{zagheni2015}. \citep{couper2013} notes that there is a risk of in-sample overfitting and type I errors when calibrating large datasets.
+	
+	\item \textbf{Differences-in-differences approach:} when it is not possible to obtain a robust point in time estimation because the previous approaches do not apply, it may still be possible to obtain a sound indication of trends by applying a differences-in-differences approach \citep{zagheni2015}. For such an approach to be feasible, a control group needs to be identified and the bias between the control and the measurement group needs to be constant with time. In addition, analogous to calibration, a key assumption needed to validate this approach is that relative changes for the subgroups of the population included in the sample are indicative of trends in the general population.         
+
+\end{enumerate}  
+
+Based on these points, a key question that needs to be addressed when analyzing broadband speed measurements is how volunteers taking part in the test differ from non-volunteers. This is a common question to most non-probabilistic survey research \citep{couper2013}. 
+
+In practical terms, the statistical issues highlighted in this section often cannot be addressed \textit{a posteriori}; that is, during the data processing stage where the available information is fixed. 
+
+For instance, a common problem when analyzing software-based broadband speed tests is that the information on the number of unique users is not available or not disclosed to the researchers \citep{canadi2012}. This is also the case in the \textit{Bredbandskollen} microdata that IIS shared with ITU, which for privacy issues does not contain a unique identifier for each user, but rather for each test. The lack of this information makes it difficult to perform any ex-post calibration, because the cross-linking of the observations from the speed measurement platform with external individual population characteristics is not possible.
+
+When facing major problems inherent to the structure of the underlying dataset, researchers often follow the approach of describing the limitations of the dataset and publishing the results as such, with little \citep{prasad2016,wattegama2011,chetty2013} or some admonition about their representativeness for the whole population \citep{canadi2012,riddlesden2014}. In the latter, an approximate correspondence between the global average speed obtained in the study and that obtained in some previous more robust measurement effort is considered as a broad indication of the validity of the results.   
+   
+More generally, the validity of the statistical inference derived from each broadband speed measurement platform may depend on the purpose of the research. If the objective is to raise awareness that some consumers are getting real broadband speeds very different from the ones advertised in their contracts, showing that this is true for a large enough number of end users' may suffice \citep{chetty2013,wattegama2011}. 
+
+If the purpose of a broadband speed measurement platform is customer self-check, a sound measurement methodology (as discussed in \Cref{meth}) and consistency in the results for a single user is all that is required. This is, for instance, the primary objective of Ookla's Speedtest. The Italian Authority for Communications Guarantees' \textit{Misurainternet} platform incorporates this logic in the application itself. Indeed, by means of an electronic certificate, legally validated results of the speed test can be communicated to the concerned ISP who then has the obligation to reestablish a minimum speed according to the conditions specified in the contract.
+
+If the objective of the research is to obtain representative information on the real broadband speeds experienced by broadband subscribers in a country, as it is the case in official telecommunication statistics, then all the statistical considerations discussed in this section should be addressed.
+
+Lastly, broadband speed measurement tests can also be a rich source of data for analyzing different Internet conditions and user behaviors across socio-economic strata. 
+
+UK geolocation               
+OPTA voluntary customer information  
 
 \section{Data}
 Bla bla
