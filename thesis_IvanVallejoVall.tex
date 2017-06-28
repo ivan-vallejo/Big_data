@@ -57,6 +57,8 @@
 % More enumaration formats
 \usepackage{enumitem}
 % More tabular formats
+\usepackage{color, colortbl}
+\definecolor{Gray}{gray}{0.8}
 \newcommand{\specialcell}[3][c]{% 
 \begin{tabular}[#1]{@{}#2@{}}#3\end{tabular}}
 \usepackage{array}
@@ -178,11 +180,11 @@ However, in-network measurements can only be accomplished by those stakeholders 
 
 Therefore, external broadband speed measurements are the most common approach to gaining insights about real broadband speeds. There are a number of private stakeholders engaging in this kind of measurements and publishing data with a global coverage. These include, \textit{inter alia}, Ookla's Speedtest and Akamai speed reports \citep{bauer2010,lehr2013,bauer2016}. 
 
-In addition, there exist several external broadband speed measurement platforms commissioned or operated by public entities and the academia. Some of them rely on hardware-based approaches, such as the SamKnows' Whitebox \citep{samknows2012,samknows2013} or the BISmark project's NoxBox \citep{sundaresan2012,sundaresan2014}. However, the majority of external measurements rely on purely software approaches. 
+In addition, there exist several external broadband speed measurement platforms commissioned or operated by public entities and the academia. Some of them rely on hardware-based approaches, such as the SamKnows' Whitebox \citep{samknows2012,samknows2013} or the BISmark router \citep{sundaresan2012,sundaresan2014,chetty2013}. However, the majority of external measurements rely on purely software approaches. 
 
 Examples of software-based approaches from public entities include the Regulatory Commission of Sri Lanka's Internet speed test platform \citep{zuhyle2015}, the Internet Foundation in Sweden's \textit{Bredbandskollen} and the Italian Authority for Communications Guarantees' \textit{Misurainternet} platform.\footnote{For more information, see the \href{https://www.misurainternet.it/}{Misurainternet website}}
 
-These platforms collect several broadband performance metrics beyond download speed, such as upload speeds and latency (delay). Depending on the type of online activity performed, some parameters will be more important than others. For instance, latency is very relevant for real-time communications, such as VoIP. As a result of the diversity of activities performed online, a complete assessment of user quality of experience cannot be summarized into a single speed metric, but will require several complementary measurements \citep{samknows2013,zuhyle2015}. 
+These platforms collect several broadband performance metrics beyond download speed, such as upload speeds and latency (delay). Depending on the type of online activity performed, some parameters will be more important than others. For instance, latency is very relevant for real-time communications, such as VoIP. As a result of the diversity of activities performed online, a complete assessment of user quality of experience cannot be summarized into a single speed metric, but will require several complementary measurements \citep{samknows2013,zuhyle2015, wattegama2011}. 
 
 Moreover, there exist some application-specific broadband measurements, such as Netflix's Fast.com and Youtube's Speed numbers. These measurement platforms are optimized to reflect what is the actual speed experienced by a user transferring video files with the size and protocols common in Netflix and YouTube, respectively. However, these speed measurements may be a poor approximation of the actual speed experienced when browsing a website or sending a file \citep{bauer2010, bauer2016}.         
 
@@ -197,7 +199,7 @@ Based on a literature review of the state-of-the-art in broadband speed measurem
 	
 \begin{figure}[H]
     \centering
-        \includegraphics[width=\linewidth]{figure_network.png}
+        \includegraphics[width=\linewidth]{figure_network.pdf}
         \caption{Network diagram -- Key measurement points.}
         \caption*{\textbf{Source:} Author based on \cite{bauer2010}.}
         \label{fig:a3}
@@ -228,23 +230,26 @@ Another relevant factor which needs to be considered is the different \textbf{sa
  
 \begin{table}[H]
 \bgroup
-\def\arraystretch{1.5}%  1 is the default, change whatever you need
- \begin{tabular}{|p{3cm}|P{2.5cm}|P{1.6cm}|P{1.9cm}|P{2cm}|P{2.2cm}|}
+\def\arraystretch{1.5}
+ 
+\setlength\arrayrulewidth{1pt} 
+\begin{tabular}{|m{30mm}|>{\centering\arraybackslash}m{25mm}|m{16mm}|m{19mm}|m{20mm}|m{22mm}|}
+\hline 
+\rowcolor{black!10}
+   & \textbf{Measurement path} & \textbf{Active passive} & \textbf{Voluntary automatic} & \textbf{Data flows} & \textbf{Statistical aggregation} \\ 
   \hline 
-   & \specialcell[c]{c}{\textbf{Measurement}\\ \textbf{path}} & \specialcell[c]{c}{\textbf{Active}\\\textbf{passive}} & \specialcell[c]{c}{\textbf{Voluntary}\\\textbf{automatic}} & \textbf{Data flows} & \specialcell[c]{c}{\textbf{Statistical}\\\textbf{aggregation}} \\ 
+  \textbf{Akamai} & 1-4 or 1-5 depending on server load & Passive & Real traffic & Sequential & Unknown \\ 
   \hline 
-  \textbf{Akamai} & \specialcell[c]{c}{1-4 or 1-5\\depending on\\server load} & Passive & \specialcell[c]{c}{Real\\traffic} & Sequential & Unknown \\ 
+  \textbf{Bredbandskollen} & 1-4 in most cases. 1-5 for the rest & Active & Voluntary & Parallel & Avg.first 2s or avg 10s \\ 
   \hline 
-  \textbf{Bredbandskollen} & \specialcell[c]{c}{1-4\\for most \\inland\\measurements} & Active & Voluntary & Parallel & \specialcell[c]{c}{Avg.first 2s\\or avg 10s} \\ 
-  \hline 
-  \textbf{Ookla} & \specialcell[c]{c}{1-4 or 1-5\\depending on\\user location} & Active & Voluntary & Parallel & \specialcell[c]{c}{Avg. after\\ramp-up\\Excl. top\\10\% and\\bottom 30\%\\slices} \\ 
+  \textbf{Ookla} & 1-4 or 1-5 depending on user location & Active & Voluntary & Parallel & Avg. after ramp-up. Excl. top 10\% and bottom 30\% slices \\ 
   \hline 
   \textbf{SamKnows} & 2-5 & Active & Automatic & Parallel &  \specialcell[c]{c}{Avg. after\\ramp-up\\Excl. top\\and bottom\\percentiles}\\ 
   \hline 
   \end{tabular}
 \egroup
   \caption{Main differences between selected Internet measurement platforms.}
-  \caption*{\textbf{Source:} Author based on \cite{bauer2010, bauer2016,samknows2013} and \href{https://ensupport.bredbandskollen.se/support/solutions/articles/1000228167-how-does-the-measurement-work-in-technical-terms-}{Bredbandskollen}.}
+  \caption*{\textbf{Source:} Author based on \cite{bauer2010, bauer2016,samknows2013,canadi2012} and \href{https://ensupport.bredbandskollen.se/support/solutions/articles/1000228167-how-does-the-measurement-work-in-technical-terms-}{Bredbandskollen}.}
         \label{tab:t1}  
 \end{table}
   
@@ -309,21 +314,110 @@ If the purpose of a broadband speed measurement platform is customer self-check,
 
 If the objective of the research is to obtain representative information on the real broadband speeds experienced by broadband subscribers in a country, as it is the case in official telecommunication statistics, then all the statistical considerations discussed in this section should be addressed.
 
-Lastly, broadband speed measurement tests can also be a rich source of data for analyzing different Internet conditions and user behaviors across socio-economic strata. 
+Lastly, broadband speed measurement tests can also be a rich source of data for analyzing different Internet conditions and user behaviors across socio-economic strata. An obstacle to mapping broadband speed data with external data sources is that broadband tests usually do not collect demographic information, which is key to linking technical measurements to wider societal issues \citep[for an example, see Chapter 6 in][]{misr2016}. 
 
-UK geolocation               
-OPTA voluntary customer information  
+Some broadband speed measurement platforms have bypassed this problem by asking end users to provide extra voluntary information, such as their postal code. Based on this extra information, it is possible to geolocate each test and link it with indicators of socio-spatial structures, such as rurality and levels of material deprivation \citep{riddlesden2014}. Other platforms ask for demographic data, such as age and gender, on a voluntary basis after/prior to the test. This information allows the linkage of the test results with demographic information from household surveys \citep{opt2012}. 
+   
 
 \section{Data}
-Bla bla
+
+This project analyses the microdata collected by means of the \textit{Bredbandskollen} platform, which was developed and is operated by the Internet Foundation in Sweden (IIS).
+
+\textit{Bredbandskollen} is an online software tool freely available. Internet users can measure their real broadband speeds for both fixed and mobile connections by running the test either on \href{https://www.bredbandskollen.se/}{\textit{Bredbandskollen website}} or by downloading an app and executing the test from a mobile device. Broadband speed tests are initiated by the end user, whenever they click on the start test button in \href{https://www.bredbandskollen.se/}{\textit{Bredbandskollen website}} or launch the measurement from the mobile app.   
+
+\textit{Bredbandskollen} measures the download and upload speed by sending data to and receiving data from the closest Internet exchange point (IXP) to the end user.\footnote{
+Each download/upload speed measurement is implemented by sending simultaneous HTTP requests from the client to the server via the socket function in Flash. If it fails in Flash, the test is repeated via the browser. The number of concurrent HTTP requests depends on the speed of the connection, the higher the speed, the higher number of HTTP threads that are initiated in order to reach the connection's maximum.} Currently,  \textit{Bredbandskollen} has test servers hosted in five IXPs (in Malmö, Göteborg, Stockholm, Sundsvall and Oslo), against which the tests are run. As a result, measurements often take place in an IXP with which the major ISPs in Sweden will have a direct interconnection. The platform has been designed to measure broadband speeds in Sweden and in the neighboring border areas. That is indeed the geographical scope of this project. 
+
+\textit{Bredbandskollen's} download and upload speed tests last ten seconds each. During the test, average speeds are calculated for the first two seconds and for the entire ten seconds. The highest of the two results is retained.  
+
+\textit{Bredbandskollen} also measures latency, i.e. the delay or round-trip time to the closest server. Latency is not the object of study of this project and it may require a slightly different approach to that applied to download and upload speeds, given that latency results are very sensitive to the distance from the end user to the test server.     
+
+The dataset used for the analysis in this project includes around 15 million test observations per year for fixed-broadband connections (\autoref{fig:a5}). Mobile-broadband observations are not within the scope of the analysis in this project, because they are affected by different technical determinants and would require a different, more challenging treatment.
+
+%\vspace{1cm}
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=\linewidth]{Observations_year.pdf}
+        \caption{Number of \textit{Bredbandskollen} observations, by year and type of service.}
+        \caption*{\textbf{Source:} Author.}
+        \label{fig:a5}
+\end{figure}   
+
+Fixed-broadband test observation ran outside the country are also excluded, given that they concern the quality of the access network of another country and therefore require a separate analysis. 
+
+Lastly, the fixed-broadband speed tests ran in Sweden are filtered to exclude those in which download speed, upload speed or latency where not greater than zero. These are considered as erroneous measurements and included in the light blue bar in \autoref{fig:a5}.           
+
+\autoref{tab:t2} shows the information recorded for each observation. 
+ 
+It is important to note that the unique identifier associated with each observation corresponds to a measurement, not to an end user. That is, a user may have tested several times their connection and each test will appear with a different unique identifier. Although \textit{Bredbandskollen} identifies unique users by means of the cookies used on the website, this information has not been shared so far with ITU because of privacy concerns.
+
+For the data analysis carried out in this project, the following fields were used: client, date/time, download speed, upload speed, average response time, country code, region code, network type and operator.
+
+The fields average response time, network type and country code were only used to filter those observations that were valid and had been performed from a fixed-broadband conection in Sweden. The other fields were used to produce the aggregate statistics presented in \Cref{res} 
+   
+\begin{table}[H]
+\bgroup
+\def\arraystretch{1.5}%  1 is the default, change whatever you need
+\setlength\arrayrulewidth{1pt} 
+\begin{tabular}{|>{\raggedright\arraybackslash}m{30mm}|m{120mm}|}
+\hline 
+\rowcolor{black!10}
+\multicolumn{1}{|>{\centering\arraybackslash}m{30mm}|}{\textbf{Field}} 
+    & \multicolumn{1}{>{\centering\arraybackslash}m{120mm}|}{\textbf{Description}}\\
+\hline 
+Unique ID & Unique number identifying each test. A single user running several tests will be assigned several unique IDs \\ 
+\hline 
+Client & iOS (mobile app for iOS), Android (mobile app for Android) or Web (measurement from the website) \\ 
+\hline 
+Date/time & UTC time, i.e. 1 or 2 hours less than \href{https://www.sp.se/en/index/information/summertime/Sidor/default.aspx}{Swedish time} depending on the period of the year \\ 
+\hline 
+Download speed & Result of the test in Mbit/s \\ 
+\hline 
+Upload speed & Result of the test in Mbit/s \\ 
+\hline 
+Avg. response time & LResult of the latency test in milliseconds \\ 
+\hline 
+Country code & Country code for the country where the test was conducted. Empty if the location of the measurement is not available. \\ 
+\hline 
+Region code & \href{http://www.scb.se/sv_/Hitta-statistik/Regional-statistik-och-kartor/Regionala-indelningar/Lan-och-kommuner/Lan-och-kommuner-i-kodnummerordning/#01}{Region code} of the location of the measurement. Blank if outside Sweden. \\ 
+\hline 
+Commune code & \href{http://www.scb.se/sv_/Hitta-statistik/Regional-statistik-och-kartor/Regionala-indelningar/Lan-och-kommuner/Lan-och-kommuner-i-kodnummerordning/#01}{Municipality code} of the location of the measurement. Blank if outside Sweden.\\ 
+\hline 
+Commune & Name of the municipality. May be empty. \\ 
+\hline 
+Network type & May be empty. If the client type is ”iOS” or ”Android”, the following options are possible: ”CDMA”, ”GPRS”, ”EDGE”, ”UMTS”, ”HSPA,” ”HSDPA”, ”HSPAP”, ”LTE”, ”Mobile” (if network type not detected) and ”WiFi” (measurement via WiFi or otherwise not using the mobile network). If the client type is ”Web”, there is some description of the subscription. Often it is based on information from the user, so it is not always reliable. \\ 
+\hline 
+Operator & Operator name, inferred from the IP number. Usually correct, but not always reliable. May be empty  \\ 
+\hline 
+Phone model & Description of the phone model, if the client type is ”iOS” or ”Android”. If the client type is ”Web”, description of the web browsers. Any semicolon is replaced with the character §) \\ 
+\hline 
+\end{tabular} 
+\egroup
+  \caption{\textit{Bredbandskollen}'s data structure for each observation.}
+  \caption*{\textbf{Source:} Author based on \textit{Bredbandskollen}.}
+        \label{tab:t2}  
+\end{table}
+
 \subsection{Processing environment}
-Bla bla
-\section{Results}
+
+\autoref{fig:a5} shows a graphical summary of the data processing environment, their interaction and data flows.
+
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=\linewidth]{data_processing.pdf}
+        \caption{Data processing diagram.}
+        \caption*{\textbf{Source:} Author.}
+        \label{fig:a6}
+\end{figure}   
+
+Given the large size of the dataset (more than 100 million observations corresponding to more than 50 GB of data), the data processing could not be performed locally nor with sequential algorithms.     
+
+
+\section{Results} \label{res}
 Bla bla
 \section{Conclusion}
 Bla bla
 
-%\nocite{*}
 
 \bibliography{references}
 \bibliographystyle{apalike}
