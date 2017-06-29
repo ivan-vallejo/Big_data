@@ -233,7 +233,7 @@ Another relevant factor which needs to be considered is the different \textbf{sa
 \def\arraystretch{1.5}
  
 \setlength\arrayrulewidth{1pt} 
-\begin{tabular}{|m{30mm}|>{\centering\arraybackslash}m{25mm}|m{16mm}|m{19mm}|m{20mm}|m{22mm}|}
+\begin{tabular}{|m{30mm}|>{\centering\arraybackslash}m{25mm}|>{\centering\arraybackslash}m{16mm}|>{\centering\arraybackslash}m{19mm}|>{\centering\arraybackslash}m{20mm}|>{\centering\arraybackslash}m{22mm}|}
 \hline 
 \rowcolor{black!10}
    & \textbf{Measurement path} & \textbf{Active passive} & \textbf{Voluntary automatic} & \textbf{Data flows} & \textbf{Statistical aggregation} \\ 
@@ -244,7 +244,7 @@ Another relevant factor which needs to be considered is the different \textbf{sa
   \hline 
   \textbf{Ookla} & 1-4 or 1-5 depending on user location & Active & Voluntary & Parallel & Avg. after ramp-up. Excl. top 10\% and bottom 30\% slices \\ 
   \hline 
-  \textbf{SamKnows} & 2-5 & Active & Automatic & Parallel &  \specialcell[c]{c}{Avg. after\\ramp-up\\Excl. top\\and bottom\\percentiles}\\ 
+  \textbf{SamKnows} & 2-5 & Active & Automatic & Parallel &  Avg. after ramp-up. Excl. top and bottom percentiles. Separate peak / off-peak \\ 
   \hline 
   \end{tabular}
 \egroup
@@ -296,7 +296,7 @@ Several approaches have been proposed to deal with selection bias:
 	
 	\item \textbf{Calibration against ground-truth data:} use data from a reliable source (i.e. the so called ground-truth data) to weight the results of the broadband speed test in order to ensure that the results of the two sources correspond for a period in which they overlap.  This correction relies on the assumption that there is a (potentially stochastic) structural relationship between the subgroup of the population included in the broadband speed test sample and those not included. Moreover, this relationship needs to hold in time \citep{zagheni2015}. \cite{couper2013} warns that there is a risk of in-sample overfitting and type I errors when calibrating large datasets.
 	
-	\item \textbf{Differences-in-differences approach:} when it is not possible to obtain a robust point in time estimation because the previous approaches do not apply, it may still be possible to obtain a sound indication of trends by applying a differences-in-differences approach \citep{zagheni2015}. For such an approach to be feasible, a control group needs to be identified and the bias between the control and the measurement group needs to be constant with time. In addition, analogous to calibration, a key assumption needed to validate this approach is that relative changes for the subgroups of the population included in the sample are indicative of trends in the general population.         
+	\item \textbf{Differences-in-differences approach:} when it is not possible to obtain a robust point in time estimation because the previous approaches do not apply, it may still be possible to obtain a sound indication of trends by applying a differences-in-differences approach \citep{zagheni2015}. For such an approach to be feasible, a control group needs to be identified and the selection bias in the control and the measurement group needs to be constant with time or evolve in parallel.\footnote{For example, there may be a selection bias in the control and measurement groups towards an over-representation of end users from a given operator. If at some point in the time series the selection bias changes only in the control group (e.g. there is no longer an over-representation of clients from that operator), then the differences-in-differences approach would no longer be valid.} In addition, analogous to calibration, a key assumption needed to validate this approach is that relative changes for the subgroups of the population included in the sample are indicative of trends in the general population.         
 
 \end{enumerate}  
 
@@ -336,17 +336,17 @@ Each download/upload speed measurement is implemented by sending simultaneous HT
 
 The dataset used for the analysis in this project includes around 15 million test observations per year for fixed-broadband connections (\autoref{fig:a5}). Mobile-broadband observations are not within the scope of this project, because they are affected by different technical determinants and would require a different, more challenging processing.
 
-%\vspace{1cm}
-\begin{figure}[H]
-    \centering
-        \includegraphics[width=\linewidth]{Observations_year.pdf}
-        \caption{Number of \textit{Bredbandskollen} observations, by year and type of service.}
-        \label{fig:a5}
-\end{figure}   
-
 Observations from fixed-broadband tests performed outside the country are also excluded, given that they concern the quality of the access network of another country and therefore require a separate analysis. 
 
 Lastly, the fixed-broadband speed tests ran in Sweden are filtered to exclude those in which download speed, upload speed or latency where not greater than zero. These are considered as erroneous measurements and included in the light blue bar in \autoref{fig:a5}.           
+
+%\vspace{1cm}
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=0.95\linewidth]{Observations_year.pdf}
+        \caption{Number of \textit{Bredbandskollen} observations, by year and type of service.}
+        \label{fig:a5}
+\end{figure}   
 
 \autoref{tab:t2} shows the information recorded for each observation. 
  
@@ -354,7 +354,7 @@ It is important to note that the unique identifier associated with each observat
 
 For the data analysis carried out in this project, the following fields were used: client, date/time, download speed, upload speed, average response time, country code, region code, network type and operator.
 
-The fields average response time, network type and country code were only used to filter those observations that were valid and had been performed from a fixed-broadband conection in Sweden. The other fields were used to produce the aggregate statistics presented in \Cref{res} 
+The fields average response time, network type and country code were only used to filter those observations that were valid and had been performed from a fixed-broadband conection in Sweden. The other fields were used to produce the aggregate statistics presented in \Cref{res}. 
    
 \begin{table}[H]
 \bgroup
@@ -400,7 +400,7 @@ Phone model & Description of the phone model, if the client type is iOS or Andro
 
 \subsection{Processing environment}
 
-\autoref{fig:a5} shows a graphical summary of the data processing environments used in this project and the corresponding data flows.
+\autoref{fig:a6} shows a graphical summary of the data processing environments used in this project and the corresponding data flows.
 
 \begin{figure}[H]
     \centering
@@ -474,31 +474,30 @@ As could be expected, upload speeds tend to be lower than download speeds: aroun
         \label{fig:a9}
 \end{figure}   
 
-There large differences between measurement platforms: Ookla's and Samknow's averages are, respectively, 34 per cent and 69 per cent higher than \textit{Bredbandskollen}'s. Akamai's average is about 62 per cent cent lower than \textit{Bredbandskollen}'s. 
+There are large differences between measurement platforms: Ookla's and Samknow's averages are, respectively, 34 per cent and 69 per cent higher than \textit{Bredbandskollen}'s. Akamai's average is about 62 per cent cent lower than \textit{Bredbandskollen}'s. 
 
 For the only two measurement platforms for which we have several years of overlapping results, Akamai and \textit{Bredbandskollen}, the relative difference between the two averages remains rather constant with time. Indeed, Akamai speed averages are in the range of 56 to 64 per cent lower than \textit{Bredbandskollen} in the period 2011-2016. Both platforms have large and comparable sample sizes (above 15 million observations per year), and therefore the difference observed is probably due to structural persisting disparities in the measurement methodology. For instance, Akamai's passive monitoring of speeds as opposed to \textit{Bredbandskollen}'s user-initiated active testing.
 
 Another relevant finding is that the average speed measured by \textit{Bredbandskollen} is significantly lower than that obtained by SamKnows in 2012. SamKnows is often taken as ground-truth data in studies targeting countries with large SamKnows deployments, such as the United States or the United Kingdom, because of the robustness of their hardware-based methodology \citep{riddlesden2014,canadi2012}. 
 
-In the case of Sweden, it is not warranted that SamKnows can be used as ground-truth data because of its relative small sample size in Sweden (about 0.5 million observations per year coming from 217 end users). Indeed, in the studies commissioned to SamKnows by the European Union, only partial results are published for Sweden \citep{samknows2012,samknows2013}.\footnote{For 2012, average download speeds for FTTx and xDSL connections are published, but not for cable. For 2013, only the average download speed of FTTx connections is published. In \autoref{fig:a9}, the average of SamKnows is estimated by taking for cable connections in Sweden the average speed of cable connections in Europe in 2012. This should a conservative estimate, given that average speeds in Sweden tend to be above the EU average.} 
+In the case of Sweden, it is not warranted that SamKnows can be used as ground-truth data because of its relative small sample size in Sweden (about 0.5 million observations per year coming from 217 end users). Indeed, in the studies commissioned to SamKnows by the European Union, only partial results are published for Sweden \citep{samknows2012,samknows2013}.\footnote{For 2012, SamKnows published the average download speeds for FTTx and xDSL connections in Sweden, but not for cable. For 2013, only the average download speed of FTTx connections was published. In \autoref{fig:a9}, the average for SamKnows is estimated by taking for cable connections in Sweden the average speed of cable connections in Europe in 2012. This is a conservative estimate, given that average speeds in Sweden tend to be above the European average.} 
 
 Nevertheless, SamKnows remains an important reference given that it is the only benchmark for Sweden in which possible bottlenecks within the home network (e.g. concurrent use of a single connection, poor WiFi performance) are discounted. SamKnows average speed is well above that measured by \textit{Bredbandskollen}, which may indicate that congestion within the home network (path from 1 to 2 in \autoref{fig:a3}) is a relevant bottleneck in Sweden.      
           
-\autoref{fig:a10} shows the breakdown of observation per operator. 
+\autoref{fig:a10} shows the breakdown of observations per operator. 
  
-\vspace{0.5cm} 
 \begin{figure}[H]
     \centering
-        \includegraphics[width=\linewidth]{byoperator_barchart.pdf}
+        \includegraphics[width=0.95\linewidth]{byoperator_barchart.pdf}
         \caption{Share of \textit{Bredbandskollen} observations per operator.}
         \label{fig:a10}
 \end{figure}   
 
-When compared to the actual market shares \citep{pts2016}, we note that there are some significant differences \autoref{fig:a11}. Indeed, the incumbent operator, Telia, is underrepresented, as well as Com Hem. On the other hand, Bahnhof and smaller operators included in the category others are largely overrepresented. 
+When compared to the actual market shares \citep{pts2016}, we note that there are some significant differences (\autoref{fig:a11}). Indeed, the incumbent operator, Telia, is underrepresented, as well as Com Hem. On the other hand, Bahnhof and smaller operators included in the category others are largely overrepresented. 
 
 If the population represented in \textit{Bredbandskollen} corresponded to the whole population of fixed-broadband subscriber in Sweden, the number of tests per operator should follow a multinomial distribution with the probability of each operator being equal to the market share. That is, if there were no selection bias, each test would be drawn (with replacement) from this multinomial distribution.
 
-This formulation allows to test the null hypothesis that \textit{Bredbandskollen}'s population is the same as that of all fixed-broadband subscribers in Sweden. If confirmed, this will be an indication of no (or mild) selection bias. If rejected, there would be evidence of an important selection bias.  
+This formulation allows us to test the null hypothesis that \textit{Bredbandskollen}'s population is the same as that of all fixed-broadband subscribers in Sweden. If confirmed, this will be an indication of no (or mild) selection bias. If rejected, there will be evidence of an important selection bias.  
 
 \begin{figure}[H]
     \centering
@@ -508,7 +507,106 @@ This formulation allows to test the null hypothesis that \textit{Bredbandskollen
         \caption*{\textbf{Source:} Swedish Post and Telecom Authority (PTS) for market shares.}
 \end{figure}   
 
-XX shows the results of chi-squared test, which is strongly rejected. As could be expected given the large number of observations, the deviations between \textit{Bredbandskollen}'s shares of observation per operator and the actual market shares indicate a significant selection bias.   
+\autoref{fig:a12} shows the results of a chi-squared test, which strongly rejects the null. As could be expected given the large number of observations, the deviations between \textit{Bredbandskollen}'s shares of observation per operator and the actual market shares indicate a significant selection bias.   
+
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=0.6\linewidth]{multinomial.pdf}
+        \caption{Chi-squared test: share of \textit{Bredbandskollen} observations per operator and actual market shares.}
+        \label{fig:a12}
+        \caption*{\textbf{Source:} Swedish Post and Telecom Authority (PTS) for market shares.}
+\end{figure}   
+
+Post-stratification methods have been shown to eliminate selection bias in some non-representative samples \citep{zagheni2015}. In particular, "post-stratification eliminates the bias due to selection or coverage problems if, within each adjustment cell, the probability that each case completes the survey is unrelated to the case value on the survey variable of interest" \citep{baker2013}. In the case of broadband speed tests, this would mean that the end users of an under- or over-represented operator that decided not to perform the test did not do so because their performance would have been different from those end users from the same operator that performed the test. This is a strong assumption in our case. 
+
+Nevertheless, we test the effects of adjusting the weights given to each \textit{Bredbandskollen}'s observation so that the final distribution corresponds to actual market shares (\autoref{fig:a13}). The correction has, however, a minimal effect on the aggregate values.    
+
+\vspace{1cm}
+\begin{figure}[H]
+	\begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{download_speeds_corrected.pdf} 
+		
+    \end{minipage}\hfill
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{upload_speeds_corrected.pdf}
+    \end{minipage}
+         \caption{Fixed-broadband download speeds (top) and upload speeds (bottom), Sweden -- \textit{Bredbandskollen} adjusted test results.}
+        \label{fig:a13}
+\end{figure}  
+
+The analysis of \textit{Bredbandskollen}'s speed tests broken down by operator shows that although major differences exist between average speeds of different operators, they have opposite effects on the adjusted total average (\autoref{fig:a14}). That is, small operators ("others") and Bahnhof are over-represented and therefore their weight is adjusted downwards in the re-weighted average. Conversely, Telia and Com Hem are under-represented and their weight is adjusted upwards. The resulting adjusted average barely changes.    
+
+
+\begin{figure}[H]
+   \begin{minipage}{0.8\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{comparison_dwlspeeds_byop.pdf} 
+		
+		\vspace{1cm}
+		        
+        \includegraphics[width=\textwidth]{comparison_uplspeeds_byop.pdf}
+    \end{minipage}
+        \caption{Fixed-broadband download speeds (top) and upload speeds (bottom) by operator, Sweden -- \textit{Bredbandskollen} test results.}
+        \label{fig:a14}
+\end{figure}   
+
+\autoref{fig:a15} and \autoref{fig:a16} show the geographical dimension of the data collected by \textit{Bredbandskollen}.      
+
+\begin{figure}[H]
+	\begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{mapfy_2011.png} 
+		
+    \end{minipage}\hfill
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{mapff_2014.png}
+    \end{minipage}
+         \caption{Share of \textit{Bredbandskollen} observations per region, 2011 and 2014.}
+        \label{fig:a15}
+\end{figure}  
+
+\begin{figure}
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{densityf.png}
+    \end{minipage}\hfill
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{mapfy_2016.png}
+    \end{minipage}\hfill    
+         \caption{Household density and share of \textit{Bredbandskollen} observations per region, 2016.}
+         \caption*{\textbf{Note:} Household density is calculated as the number of households covered with fixed Internet service in a region over the total number of households covered by fixed Internet services in the whole country. Data on broadband coverage are sourced from the \href{http://statistik.pts.se/broadband/}{Swedish Post and Telecom Authority}.}
+        \label{fig:a16}
+\end{figure}  
+
+
+As it could be expected, the region of Stockholm concentrates most of the observations, followed by Västra Götlands region\footnote{The second most populated region in Sweden after Stokholm. The largest city in Västra Götlands's is Gothenburg.} and Skäne region.\footnote{The third most populated region in Sweden. Its largest city is Malmö.} This is in line with the population density of these three regions, which concentrate most of the households with access to fixed-broadband services in Sweden. 
+
+An unexpected finding is the large number of observations from Jämtland region in 2013 and 2014. Jämtland is a sparsely populated, rural region in the middle of Sweden (see \autoref{fig:a15}, right). For some unknown reason, it is largely over-represented in \textit{Bredbandskollen}'s sample in 2013 and 2014, with more than 15 per cent of total observation coming from that region in these two years. This is in stark contrast with 2015, where less than 1 per cent of \textit{Bredbandskollen}'s observations were located in Jämtland region.
+
+Stockholm region could also be over-represented in 2016, because it accumulates 37.5 per cent of all observations in that year whereas it only represents 21.9 per cent of the households with potential access to a fixed-broadband connection. In order to know precisely whether its representation in the sample is correct or not, we would need data on the number of fixed-broadband subscriptions broken down by region, which unfortunately PTS does not collect.
+
+If we run a chi-squared test to check whether the sample distribution per region corresponds to the household density, the results strongly reject the null hypothesis that both come from the same distribution (\autoref{fig:a17}). 
+
+This is not as conclusive a sign of selection bias as that obtained with the chi-squared test ran on the observations per operator. Indeed, in this case we are assuming that the share of subscriptions per region corresponds to the share of potential customers per region. This is often not the case, as dense urban areas tend to concentrate most of the connections, whereas sparse rural areas are less connected, even proportionally to their population \citep[see chapter 6 in][]{misr2016}. 
+
+Nevertheless, what is definitely a sign of selection bias or measurement error (e.g. failure to geolocate appropriately a large number of observations) is the oscillation observed in the share of observations per region. This applies to both Jämtland and Stockholm regions. Fixed-broadband subscriptions cannot be expected to increase sharply given the high penetration levels in Sweden.\footnote{There were 32.0 fixed-broadband subscriptions per 100 inhabitants in Sweden in 2011 and 36.1 in 2016. There has been remarkable progress given the high starting penetration level in 2011. However, there has not been a drastic change in the trend that could explain the oscillations observed in \textit{Bredbandskollen}'s shares of observations per region. Fixed-broadband figures sourced from \href{http://www.itu.int/en/ITU-D/Statistics/Pages/stat/default.aspx}{ITU}.} Therefore, the share of observations corresponding to these regions should not change abruptly from one year to another.
+
+The oscillations observed could be explained either by an error in geolocating the IPs of a large number of end users running the test in these regions or by a structural change in the selection bias (e.g. some very active users in the Jämtland region performed many tests on \textit{Bredbandskollen} in 2013 and 2014, but in 2015 and 2016 they stopped the tests or started using another speed measurement platform). \textit{Bredbandskollen}'s data on unique end users could share some light on this latter hypothesis.               
+
+\vspace{2cm}
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=0.6\linewidth]{multinomial_regions.pdf}
+        \caption{Chi-squared test: share of \textit{Bredbandskollen} observations per region and household density per region.}
+        \label{fig:a17}
+        \caption*{\textbf{Note:} Household density is calculated as the number of households covered with fixed Internet service in a region over the total number of households covered by fixed Internet services in the whole country. Data on broadband coverage are sourced from the \href{http://statistik.pts.se/broadband/}{Swedish Post and Telecom Authority}.}
+\end{figure}   
+
+       
 
 \section{Conclusion}
 Lack of covariates makes it difficult to link the speed dataset with external sources (technology).
