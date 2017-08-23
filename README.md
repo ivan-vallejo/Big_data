@@ -1,11 +1,5 @@
 # Measuring real broadband speeds using crowdsourcing data from the Internet Foundation
+## Ivan Vallejo Vall, June 2017 
 
-The International Telecommunication Union (ITU, the UN specialized agency for ICTs)is carrying out a series of pilot studies under the umbrella of the project Big Data for Measuring the Information Society.
-
-The objective of the project is to show how big data from the telecommunication industrycan be used to produce new ICT indicators and replace or complement existing ones with a view to measuring the development of the Information Society worldwide.
-
-In particular, these pilot studies aim to be a first step towards filling in the ICT data gaps in the global indicator framework agreed for the monitoring the 2030 Agenda for Sustainable Development, and to inform private and public stakeholders on the current status of the digital divide.
-
-The object of my master thesis concerns the measurements on broadband speeds carried out by the Internet Foundation in Sweden (IIS) and made available to ITU in the context of the project Big Data for Measuring the Information Society.
-
-In this repository I will share the results of my MSc thesis.
+** Abstarct **
+Broadband networks have become a fundamental infrastructure and, as a result, there is a growing need for accurate data on some of their main characteristics. In particular, broadband speed measurements are a key input to several consumer, policy and regulatory decisions. This project reviews the state-of-the-art in broadband measurement platforms, both from a technical and statistical point of view, and applies it to assess whether crowdsourcing Internet data on broadband speed measurements can be used to extract robust inference on real broadband speeds. One hundred million observations from Bredbandskollen, the broadband speed measurement platform of the Internet Foundation in Sweden, are processed using big data methods. The analysis provides strong evidence of a selection bias and an unstable sample composition across years, thus indicating that the sample of test users may not be representative of the whole population of Sweden. Nevertheless, the analysis finds that there is a relative equality of speeds across regions and that there does not seem to be an urban/rural broadband speed divide in Sweden.
