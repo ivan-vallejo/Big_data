@@ -209,7 +209,7 @@ ggplot(data=speeds_comp, aes(x=Year, y=Speed, fill=Source)) +
   theme_classic()+ 
   theme(axis.title.y=element_text(margin=margin(0,20,0,0)),axis.title.x=element_text(margin=margin(20,0,0,0)))+
   #xlab("Year")+
-  ylab('Donwload speed (Mbit/s)')+
+  ylab('Download speed (Mbit/s)')+
   scale_x_continuous(breaks=c(2012,2016),
                      labels=c('2012','2016'))+
   scale_y_continuous(breaks=seq(0,60,10))+
@@ -412,7 +412,7 @@ ggplot(data=speed_byop, aes(x=Year, y=Dwl, fill=Operator)) +
   theme_classic()+ 
   theme(axis.title.y=element_text(margin=margin(0,20,0,0)),axis.title.x=element_text(margin=margin(20,0,0,0)))+
   #xlab("Year")+
-  ylab('Donwload speed (Mbit/s)')+
+  ylab('Download speed (Mbit/s)')+
   scale_x_continuous(breaks=c(2011,2016),
                      labels=c('2011','2016'))+
   scale_y_continuous(breaks=seq(0,90,20))+
